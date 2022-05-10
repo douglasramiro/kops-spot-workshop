@@ -92,7 +92,6 @@ In this step you will install all the dependencies that you will need during the
 
 In this step we will configure some of the environment variables that will be used to set up our environment, and create and configure the S3 bucket that kOps will use as [states store](https://kops.sigs.k8s.io/state/).
 
-<br/>
 
 1. Export environment variables according to the following requirements:
 - The name of our cluster will be **“spot-kops-cluster”**. To reduce the dependencies on other services, in this tutorial we will create our cluster using [Gossip DNS](https://kops.sigs.k8s.io/gossip/), hence the cluster domain will be **k8s.local** and the fully qualified name of the cluster **spot-kops-cluster.k8s.local**.
