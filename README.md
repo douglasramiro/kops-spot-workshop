@@ -94,9 +94,9 @@ In this step we will configure some of the environment variables that will be us
 
 
 1. Export environment variables according to the following requirements:
-- The name of our cluster will be **“spot-kops-cluster”**. To reduce the dependencies on other services, in this tutorial we will create our cluster using [Gossip DNS](https://kops.sigs.k8s.io/gossip/), hence the cluster domain will be **k8s.local** and the fully qualified name of the cluster **spot-kops-cluster.k8s.local**.
-- You will also create an S3 bucket where kOps configuration and the cluster's state will be stored. We will use [uuidgen](https://man7.org/linux/man-pages/man1/uuidgen.1.html) to generate a [unique S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html).
-- In the above command, you will set the environment variables that will be used across the rest of the session.
+    - The name of our cluster will be **“spot-kops-cluster”**. To reduce the dependencies on other services, in this tutorial we will create our cluster using [Gossip DNS](https://kops.sigs.k8s.io/gossip/), hence the cluster domain will be **k8s.local** and the fully qualified name of the cluster **spot-kops-cluster.k8s.local**.
+    - You will also create an S3 bucket where kOps configuration and the cluster's state will be stored. We will use [uuidgen](https://man7.org/linux/man-pages/man1/uuidgen.1.html) to generate a [unique S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html).
+    - In the above command, you will set the environment variables that will be used across the rest of the session.
 
     ```bash
     export NAME=spot-kops-cluster.k8s.local
