@@ -85,7 +85,6 @@ In this step you will install all the dependencies that you will need during the
 </details>
 
 <br/>
-<br/>
 
 <details>
   <summary>Step 2: Set up kOps Cluster environment and state store</summary>
