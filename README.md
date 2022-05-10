@@ -83,3 +83,54 @@ In this step you will install all the dependencies that you will need during the
     GO111MODULE=on go get github.com/mikefarah/yq ; export PATH=$PATH:~/go/bin
     ```
 </details>
+
+<br/>
+<br/>
+
+<details>
+  <summary>Step 2: Set up kOps Cluster environment and state store</summary>
+<br/>
+
+In this step we will configure some of the environment variables that will be used to set up our environment, and create and configure the S3 bucket that kOps will use as [states store](https://kops.sigs.k8s.io/state/).
+
+<br/>
+
+1. Export environment variables according to the following requirements:
+- The name of our cluster will be **“spot-kops-cluster”**. To reduce the dependencies on other services, in this tutorial we will create our cluster using [Gossip DNS](https://kops.sigs.k8s.io/gossip/), hence the cluster domain will be **k8s.local** and the fully qualified name of the cluster **spot-kops-cluster.k8s.local**.
+- You will also create an S3 bucket where kOps configuration and the cluster's state will be stored. We will use [uuidgen](https://man7.org/linux/man-pages/man1/uuidgen.1.html) to generate a [unique S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html).
+- In the above command, you will set the environment variables that will be used across the rest of the session.
+
+    ```bash
+    export NAME=spot-kops-cluster.k8s.local
+    export KOPS_STATE_PREFIX=spot-kops-$(uuidgen)
+    export KOPS_STATE_STORE=s3://${KOPS_STATE_PREFIX}
+    ```
+
+2. Additionally you will set a few other environment variables that define the region and availability zones where your cluster will be deployed. In this tutorial, the region will be “us-east-1”, you can change this and point it to the region where you would prefer running your cluster.
+
+    ```bash
+    export AWS_REGION=us-east-1
+    export AWS_REGION_AZS=$(aws ec2 describe-availability-zones \
+    --region ${AWS_REGION} \
+    --query 'AvailabilityZones[0:3].ZoneName' \
+    --output text | \
+    sed 's/\t/,/g')
+    ```
+
+3. Now that you have the name of your cluster and S3 State Store bucket defined, let's create the S3 bucket.
+
+    ```bash
+    aws s3api create-bucket \
+    --bucket ${KOPS_STATE_PREFIX} \
+    --region ${AWS_REGION} \
+    ```
+
+4. Once the bucket has been created, you can apply one of kOps best practices by enabling S3 Versioning on the bucket. S3 is acting as the state store, and by enabling versioning on the bucket you will be able to recover your cluster back to a previous state and configuration.
+
+    ```bash
+    aws s3api put-bucket-versioning \
+    --bucket ${KOPS_STATE_PREFIX} \
+    --region ${AWS_REGION} \
+    --versioning-configuration Status=Enabled
+    ```
+</details>
