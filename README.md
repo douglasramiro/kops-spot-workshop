@@ -34,7 +34,7 @@ In this step you will install all the dependencies that you will need during the
    sudo ./aws/install
    ```
 
-2. kOps requires that you have AWS credentials configured in your environment. The aws configure command is the fastest way to set up your AWS CLI installation for general use. Run the command and follow the prompts. You can use Administrator IAM policy, but if you want to limit the permissions required by kOps, the minimum required IAM privileges you will need are:
+2. kOps requires that you have AWS credentials configured in your environment. The `aws configure` command is the fastest way to set up your AWS CLI installation for general use. Run the command and follow the prompts. You can use Administrator IAM policy, but if you want to limit the permissions required by kOps, the minimum required IAM privileges you will need are:
 
 - AmazonEC2FullAccess
 - AmazonRoute53FullAccess
