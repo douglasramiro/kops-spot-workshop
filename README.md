@@ -19,8 +19,9 @@ In this tutorial you will learn how to add Spot Instances to your kOps Kubernete
 
 <details>
   <summary>Step 1: Set up AWS CLI, kOps, and kubectl</summary>
-  - - - -
+  <br/>
   In this step you will install all the dependencies that you will need during the tutorial.
+  <br/>
     1.  
         1. Install version 2 of the AWS CLI by running the following commands — if you’re using Linux — or follow the instructions in the [AWS CLI installation guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) for different operating systems.
 
