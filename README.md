@@ -18,7 +18,6 @@ In this tutorial you will learn how to add Spot Instances to your kOps Kubernete
 - How to clean up your resources
 <br/>
 <br/>
-<br/>
 <details>
   <summary>Step 1: Set up AWS CLI, kOps, and kubectl</summary>
 <br/>
