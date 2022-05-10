@@ -58,4 +58,28 @@ In this step you will install all the dependencies that you will need during the
   - ListQueues
   - ListQueueTags 
 
+3. [Install kOps](https://kops.sigs.k8s.io/getting_started/install/) in your environment. You can also follow this guide to install kOps for other architectures and platforms. At the time of writing, the latest version of kOps is v1.23.1
+
+    ```bash
+    export KOPS_VERSION=v1.23.1
+    curl -LO https://github.com/kubernetes/kops/releases/download/${KOPS_VERSION}/kops-linux-amd64
+    chmod +x kops-linux-amd64
+    sudo mv kops-linux-amd64 /usr/local/bin/kops
+    kops version
+    ```
+
+4. Install Kubectl. You can also follow [this guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for other architectures and platforms. You should use the same major kubectl version as the kOps version selected.
+
+    ```bash
+    export KUBECTL_VERSION=v1.23.6
+    sudo curl --silent --location -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+    sudo chmod +x /usr/local/bin/kubectl
+    kubectl version
+    ```
+
+5. In addition to kOps and kubectl, install [yq](https://github.com/mikefarah/yq/), a portable command-line YAML processor. You can follow yq [installation instructions](https://mikefarah.gitbook.io/yq/) for your system. On Cloud9 and Linux, we can install yq with the command on the right. The command requires that Go tools are installed in your environment. You can run  `go version` to check if Go is already installed in your environment; if it is not, [install go tools](https://golang.org/doc/install#install) before proceeding with this step.
+
+    ```bash
+    GO111MODULE=on go get github.com/mikefarah/yq/v3 ; export PATH=$PATH:~/go/bin
+    ```
 </details>
