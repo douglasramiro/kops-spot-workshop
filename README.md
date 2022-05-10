@@ -80,6 +80,6 @@ In this step you will install all the dependencies that you will need during the
 5. In addition to kOps and kubectl, install [yq](https://github.com/mikefarah/yq/), a portable command-line YAML processor. You can follow yq [installation instructions](https://mikefarah.gitbook.io/yq/) for your system. On Cloud9 and Linux, we can install yq with the command on the right. The command requires that Go tools are installed in your environment. You can run  `go version` to check if Go is already installed in your environment; if it is not, [install go tools](https://golang.org/doc/install#install) before proceeding with this step.
 
     ```bash
-    GO111MODULE=on go get github.com/mikefarah/yq/v3 ; export PATH=$PATH:~/go/bin
+    GO111MODULE=on go get github.com/mikefarah/yq ; export PATH=$PATH:~/go/bin
     ```
 </details>
