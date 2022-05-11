@@ -244,13 +244,12 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
 2. Now let’s create the second Instance Group. This time, you will create the group **spot-group-base-2vcpus-8gb**, using a different approach as in the previous step. Instead of defining a base instance type, now you will specify the amount of memory and vcpus:
 
     ```bash
-    kops toolbox instance-selector "spot-group-base-2vcpus-8gb" \
+    kops toolbox instance-selector "spot-group-base-2vcpus-8gb-2" \
     --usage-class spot --cluster-autoscaler \
-    --flexible --burst-support=false \
-    --vcpus-min=2 --vcpus-max=2 --memory-min 8gb --memory-max 8gb \
-    --deny-list '^?[1-3].*\..*' --gpus 0 \
-    --node-count-max 5 --node-count-min 1 \
-    --name ${NAME}
+    --burst-support=false \
+    --vcpus=2  --memory=8GB   \
+    --gpus 0 --node-count-max 5 \
+    --node-count-min 1 --name ${NAME}
     ```
 
 3. Before proceeding with the final instantiation of the cluster, let’s validate and review the newly created Instance Group's configuration. Run the following command to display the configuration of the **spot-group-base-2vcpus-8gb** Instance Group.
