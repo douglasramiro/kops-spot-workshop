@@ -420,7 +420,7 @@ Finally let's deploy a test application and scale our cluster. To scale our appl
 
     ```bash
     kubectl autoscale deployment php-apache  \
-    --cpu-percent=50 \
+    --cpu-percent=20 \
     --min=1  \
     --max=30 
     ```
