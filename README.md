@@ -262,5 +262,13 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
 
     ![Architecture Diagram](/arch.png)
     <br/>
+
     However, you have only configured the cluster up to this point. To actually instantiate it, you must execute the following command:
+
+    ```bash
+    kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin 
+    ```
+
+    ::alert[If your environment previously had a kubeconfig file, you may need to run `kops export kubecfg –name ${NAME}` to store the configuration and change the config. ]
+
 <br/>
