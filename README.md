@@ -132,3 +132,34 @@ In this step we will configure some of the environment variables that will be us
     --versioning-configuration Status=Enabled
     ```
 </details>
+
+<br/>
+
+<details>
+  <summary>Step 3: Cluster creation and On-Demand node configuration</summary>
+<br/>
+
+In this step you will create the cluster control plane and a kOps InstanceGroup with OnDemand instances. You will also add some labels to the group, so that you can place pods accordingly later on.
+
+1. It is now time to create the cluster. We will build a [Highly Available (HA)](https://kops.sigs.k8s.io/operations/high_availability/) cluster using m5.large instances for the [kubernetes masters](https://kubernetes.io/docs/concepts/) spread across three Availability Zones. Additionally we create an InstanceGroup with two t3.large OnDemand worker nodes, that we will use to demonstrate how you can configure your applications to run on Spot or OnDemand Instances, depending on the type of workflow.
+
+    ```bash
+    kops create cluster \
+    --name ${NAME} \
+    --state ${KOPS_STATE_STORE} \
+    --cloud aws \
+    --master-size m5.large \
+    --master-count 3 \
+    --master-zones ${AWS_REGION_AZS} \
+    --zones ${AWS_REGION_AZS} \
+    --node-size t3.large \
+    --node-count 2 \
+    --dns private 
+    ```
+
+2. Great! The output of the previous command displays all the resources that will be created. You can check that the cluster configuration has been written to the kOps state S3 bucket. The following command should showcase the cluster state, and yield and an output similar to the following one:
+
+    ```bash
+    
+    ```
+</details>
