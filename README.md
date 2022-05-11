@@ -218,3 +218,49 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
     ```
 
 </details>
+
+<br/>
+
+<details>
+  <summary>Step 4: Adding Spot workers with kOps toolbox instance-selector</summary>
+<br/>
+
+Until January of 2021, to adhere to Spot best practices using kOps, users were required to select a group of Spot instances to diversify manually. They then had to configure a [MixedInstancePolicy InstanceGroup](https://kops.sigs.k8s.io/instance_groups/#mixedinstancepolicy-aws-only) in order to apply diversification within the instance group. In that date, we introduced a new tool: **kOps toolbox instance-selector**. This tool is distributed as part of the standard kOps distribution, and it simplifies the creation of kOps Instance Groups, by creating groups that fully adhere to Spot Instances best practices.
+
+In order to tap into multiple Spot capacity pools, you will create two Instance Groups, each containing multiple instance types. Diversifying into more capacity pools increases the chances of achieving the desired scale, and maintaining it if some of the capacity pools get interrupted (when EC2 needs the capacity back). Each Instance Group ([EC2 Auto Scaling group](https://aws.amazon.com/ec2/autoscaling/)) will launch instances using Spot pools that are optimally chosen based on the available Spot capacity.
+
+
+1. The following  command creates an Instance Group, which will be called **spot-group-base-4vcpus-16gb**. To create the group, use kOps toolbox instance-selector, which saves the effort of manually configuring the new group for diversification. In this case, use the `--instance-type-base` with m5.xlarge as your base instance, made up of pools from the latest generations. You can get more information about which parameters `kops toolbox instance-selector` uses by running **kops toolbox instance-selsector –-help**
+
+    ```bash
+    kops toolbox instance-selector "spot-group-base-4vcpus-16gb" \
+    --usage-class spot --cluster-autoscaler \
+    --base-instance-type "m5.xlarge" --burst-support=false \
+    --deny-list '^?[1-3].*\..*' --gpus 0 \
+    --node-count-max 5 --node-count-min 1 \
+    --name ${NAME} 
+    ```
+
+2. Now let’s create the second Instance Group. This time, you will create the group **spot-group-base-2vcpus-8gb**, following the same approach as in the previous step.
+
+    ```bash
+    kops toolbox instance-selector "spot-group-base-2vcpus-8gb" \
+    --usage-class spot --cluster-autoscaler \
+    --base-instance-type "m5.large" --burst-support=false \
+    --deny-list '^?[1-3].*\..*' --gpus 0 \
+    --node-count-max 5 --node-count-min 1 \
+    --name ${NAME}
+    ```
+
+3. Before proceeding with the final instantiation of the cluster, let’s validate and review the newly created Instance Group's configuration. Run the following command to display the configuration of the **spot-group-base-2vcpus-8gb** Instance Group.
+
+    ```bash
+    kops get ig spot-group-base-2vcpus-8gb --name $NAME -o yaml
+    ```
+
+4. Your cluster is now configured with all the resources depicted in the architecture diagram below. 
+
+    ![Architecture Diagram](/arch.png)
+    <br/>
+    However, you have only configured the cluster up to this point. To actually instantiate it, you must execute the following command:
+<br/>
