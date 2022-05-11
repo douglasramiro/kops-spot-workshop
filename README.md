@@ -328,13 +328,7 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
     kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
     ```
 
-2. Perform a rolling update on the cluster. This step may take five minutes to conclude:
-
-    ```bash
-     kops rolling-update cluster --yes
-    ```
-
-3. To check that the aws-node-termination-handler has been deployed successfully, execute the following command.
+2. To check that the aws-node-termination-handler has been deployed successfully, execute the following command.
 
     ```bash
     kubectl get deployment aws-node-termination-handler -n kube-system -o wide
@@ -345,9 +339,26 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
   <summary>Step 6: Deploy the Kubernetes Cluster Autoscaler</summary>
 <br/>
 
+
 [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) is a Kubernetes [controller](https://kubernetes.io/docs/concepts/architecture/controller/) that dynamically adjusts the size of the cluster. If there are pods that can't be scheduled in the cluster due to insufficient resources, Cluster Autoscaler will issue a scale-out action. When there are nodes in the cluster that have been under-utilized for a period of time, Cluster Autoscaler will scale-in the cluster. Internally Cluster Autoscaler evaluates a set of **instance groups** to scale up the cluster. When Cluster Autoscaler runs on AWS, **instance groups** are implemented using Auto Scaling Groups. To calculate the number of nodes to scale-out/in when required, Cluster Autoscaler assumes all the instances in an instance group are homogenous (i.e. have the same number of vCPUs and memory size).
 
-1. kOps facilitates the deployment of the Cluster Autoscaler, allowing you to add its configuration as an addon to the kOps cluster spec. Deploy the Cluster Autoscaler addon with the following command:
+Metrics Server is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines. These metrics will drive the scaling behavior of the deployments.
+
+1. Before installing Cluster Autoscaler, install the metric server using a kOps addon:
+
+    ```bash
+    kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
+    cat << EOF > ./metric_server_addon.yaml
+    spec:
+      metricsServer:
+        enabled: true
+    EOF
+    yq merge --overwrite --inplace ~/environment/cluster_config.yaml ~/environment/metric_server_addon.yaml
+    aws s3 cp ~/environment/cluster_config.yaml ${KOPS_STATE_STORE}/${NAME}/config
+    kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
+    ```
+
+2. kOps facilitates the deployment of the Cluster Autoscaler, allowing you to add its configuration as an addon to the kOps cluster spec. Deploy the Cluster Autoscaler addon with the following command:
 
     ```bash
     kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
