@@ -164,6 +164,32 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
     ```
 
     ```bash
-
+    2022-05-11 00:08:21          0 spot-kops-cluster.k8s.local/clusteraddons/default
+    2022-05-11 00:08:21       1723 spot-kops-cluster.k8s.local/config
+    2022-05-11 00:08:21        454 spot-kops-cluster.k8s.local/instancegroup/master-us-east-1a
+    2022-05-11 00:08:21        454 spot-kops-cluster.k8s.local/instancegroup/master-us-east-1b
+    2022-05-11 00:08:21        454 spot-kops-cluster.k8s.local/instancegroup/master-us-east-1c
+    2022-05-11 00:08:21        450 spot-kops-cluster.k8s.local/instancegroup/nodes-us-east-1a
+    2022-05-11 00:08:21        450 spot-kops-cluster.k8s.local/instancegroup/nodes-us-east-1b
+    2022-05-11 00:08:21        450 spot-kops-cluster.k8s.local/instancegroup/nodes-us-east-1c
     ```
+
+3. As for the two nodes in the InstanceGroup that you created, you should label those as OnDemand nodes by adding a lifecycle label. kOps created an instance group per AZ for your nodes, so you will apply the changes to each of them. To merge the new configuration attributes to the cluster nodes, you will use yq.
+
+    ```bash
+    for availability_zone in $(echo ${AWS_REGION_AZS} | sed 's/,/ /g')
+    do
+    NODEGROUP_NAME=nodes-${availability_zone}
+    echo "Updating configuration for group ${NODEGROUP_NAME}"
+    cat << EOF > ./nodes-extra-labels.yaml
+spec:
+  nodeLabels:
+    kops.k8s.io/lifecycle: OnDemand
+EOF
+    kops get instancegroups --name ${NAME} ${NODEGROUP_NAME} -o yaml > ./${NODEGROUP_NAME}.yaml
+    yq merge -a append --overwrite --inplace ./${NODEGROUP_NAME}.yaml ./nodes-extra-labels.yaml
+    aws s3 cp ${NODEGROUP_NAME}.yaml ${KOPS_STATE_STORE}/${NAME}/instancegroup/${NODEGROUP_NAME}
+    done
+    ```
+
 </details>
