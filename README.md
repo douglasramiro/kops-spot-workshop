@@ -269,6 +269,6 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
     kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin 
     ```
 
-    ::alert[If your environment previously had a kubeconfig file, you may need to run `kops export kubecfg –name ${NAME}` to store the configuration and change the config. ]
+   > :warning: If your environment previously had a kubeconfig file, you may need to run `kops export kubecfg –name ${NAME}` to store the configuration and change the config. ]
 
 <br/>
