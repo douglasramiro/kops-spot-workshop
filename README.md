@@ -271,4 +271,20 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
 
    > :warning: If your environment previously had a kubeconfig file, you may need to run `kops export kubecfg –name ${NAME}` to store the configuration and change the config. ]
 
-<br/>
+5. The command in the previous step will start requesting for all the cluster resources, and end up with an output similar to the following one. This may take around five minutes.
+
+    ```bash
+
+    ```
+
+6. You can run the **kOps validate cluster** command to evaluate the state of the cluster a few times per minute, capturing the progress of its creation.
+
+    ```bash
+    kops validate cluster --wait 10m
+    ```
+
+7. Once the cluster is in a healthy state, you can list nodes to check that the cluster and all its associated resources are up and running.
+
+    ```bash
+    kubectl get nodes --show-labels
+    ```
