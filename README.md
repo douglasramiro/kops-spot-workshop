@@ -450,6 +450,7 @@ Finally let's deploy a test application and scale our cluster. To scale our appl
 
 You should see your environment scaling. 
 
+</details>
 
 <details>
   <summary>Step 8: Clean Up</summary>
