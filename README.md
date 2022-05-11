@@ -237,7 +237,7 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
     --usage-class spot --cluster-autoscaler \
     --base-instance-type "m5.xlarge" --burst-support=false \
     --deny-list '^?[1-3].*\..*' --gpus 0 \
-    --node-count-max 5 --node-count-min 1 \
+    --node-count-max 20 --node-count-min 1 \
     --name ${NAME} 
     ```
 
@@ -248,7 +248,7 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
     --usage-class spot --cluster-autoscaler \
     --burst-support=false \
     --vcpus=2  --memory=8GB   \
-    --gpus 0 --node-count-max 5 \
+    --gpus 0 --node-count-max 20 \
     --node-count-min 1 --name ${NAME}
     ```
 
