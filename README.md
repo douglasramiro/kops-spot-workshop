@@ -350,6 +350,8 @@ Metrics Server is a scalable, efficient source of container resource metrics for
     kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
     cat << EOF > ./metric_server_addon.yaml
     spec:
+      certManager:
+        enabled: true
       metricsServer:
         enabled: true
     EOF
