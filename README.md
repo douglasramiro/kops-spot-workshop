@@ -183,7 +183,7 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
     echo "Updating configuration for group ${NODEGROUP_NAME}"
     cat << EOF > ./nodes-extra-labels.yaml
     spec:
-    nodeLabels:
+      nodeLabels:
         kops.k8s.io/lifecycle: OnDemand
     EOF
     kops get instancegroups --name ${NAME} ${NODEGROUP_NAME} -o yaml > ./${NODEGROUP_NAME}.yaml
