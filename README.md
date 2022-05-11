@@ -452,6 +452,8 @@ You should see your environment scaling.
 
 </details>
 
+<br/>
+
 <details>
   <summary>Step 8: Clean Up</summary>
 <br/>
