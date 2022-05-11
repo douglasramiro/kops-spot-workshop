@@ -334,6 +334,7 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
     kubectl get deployment aws-node-termination-handler -n kube-system -o wide
     ```
 </details>
+<br/>
 
 <details>
   <summary>Step 6: Deploy the Kubernetes Cluster Autoscaler</summary>
@@ -360,7 +361,13 @@ Metrics Server is a scalable, efficient source of container resource metrics for
     kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
     ```
 
-2. kOps facilitates the deployment of the Cluster Autoscaler, allowing you to add its configuration as an addon to the kOps cluster spec. Deploy the Cluster Autoscaler addon with the following command:
+2. Wait until the metric server is up and running:
+
+    ```bash
+    kubectl get deploy metrics-server -n kube-system
+    ```
+
+3. kOps facilitates the deployment of the Cluster Autoscaler, allowing you to add its configuration as an addon to the kOps cluster spec. Deploy the Cluster Autoscaler addon with the following command:
 
     ```bash
     kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
@@ -392,3 +399,53 @@ Metrics Server is a scalable, efficient source of container resource metrics for
     kubectl logs -f deployment/cluster-autoscaler -n kube-system --tail=10
     ```
 </details>
+
+<br/>
+<details>
+  <summary>Step 7: Deploy a Sample Application</summary>
+<br/>
+
+Finally let's deploy a test application and scale our cluster. To scale our application, we will use a Deployment and a Horizontal Pod Autoscaler.
+
+1. Deploy an application and expose as a service on TCP port 80. The application is a custom-built image based on the php-apache image. The index.php page performs calculations to generate CPU load. More information can be found [here](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#run-expose-php-apache-server)
+
+    ```bash
+    kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
+    kubectl set resources deploy php-apache --requests=cpu=1
+    kubectl expose deploy php-apache --port 80
+    kubectl get pod -l app=php-apache
+    ```
+
+2. Create an Hpa resource. This HPA scales up when CPU exceeds 50% of the allocated container resource.
+
+    ```bash
+    kubectl autoscale deployment php-apache  \
+    --cpu-percent=50 \
+    --min=1  \
+    --max=30 
+    ```
+
+3. View the HPA using kubectl. You probably will see `<unknown>/50%` for 1-2 minutes and then you should be able to see `0%/50%`.
+
+    ```bash
+    kubectl get hpa
+    ```
+
+4. Open a new terminal window and create a new container:
+
+    ```bash
+    kubectl run -i --tty load-generator-1 --image=busybox /bin/sh
+    ```
+5. Execute a while loop to generate load in the application:
+
+    ```bash
+    while true; do wget -q -O - http://php-apache; done
+    ```
+
+6. In the previous terminal, watch the HPA with the following command:
+
+    ```bash
+    kubectl get hpa -w
+    ```
+
+You should see your environment scaling. 
