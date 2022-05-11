@@ -411,7 +411,7 @@ Finally let's deploy a test application and scale our cluster. To scale our appl
 
     ```bash
     kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
-    kubectl set resources deploy php-apache --requests=cpu=1
+    kubectl set resources deploy php-apache --requests=cpu=2000
     kubectl expose deploy php-apache --port 80
     kubectl get pod -l app=php-apache
     ```
@@ -449,3 +449,20 @@ Finally let's deploy a test application and scale our cluster. To scale our appl
     ```
 
 You should see your environment scaling. 
+
+
+<details>
+  <summary>Step 8: Clean Up</summary>
+<br/>
+
+1. Remove the kOps cluster:
+
+    ```bash
+    kops delete cluster --name ${NAME} --yes
+    ```
+
+2. In the console, remove the S3 bucket. Read ["Deleting a single object" section](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/delete-objects.html) of the AWS Documentation to find out how to delete a bucket from the console.
+
+</details>
+
+
