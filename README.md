@@ -357,8 +357,8 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
         node: |
         [
             {
-            "Effect":"Allow",
-            "Action": [
+              "Effect":"Allow",
+              "Action": [
                 "autoscaling:DescribeAutoScalingGroups",
                 "autoscaling:DescribeAutoScalingInstances",
                 "autoscaling:DescribeTags",
@@ -366,8 +366,8 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
                 "autoscaling:SetDesiredCapacity",
                 "autoscaling:TerminateInstanceInAutoScalingGroup",
                 "ec2:DescribeLaunchTemplateVersions"
-            ],
-            "Resource":"*"
+              ],
+              "Resource":"*"
             }
         ] 
     EOF
