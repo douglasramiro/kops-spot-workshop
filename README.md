@@ -211,5 +211,10 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
     done
     ```
 
+5. Aside from validating that the lifecycle label is set up, you can inspect one of the nodegroup's configuration. Run the following command to view it.
+
+    ```bash
+    kops get ig --name ${NAME} nodes-$(echo ${AWS_REGION_AZS}|cut -d, -f 1) -o yaml
+    ```
 
 </details>
