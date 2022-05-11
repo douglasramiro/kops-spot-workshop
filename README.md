@@ -411,7 +411,7 @@ Finally let's deploy a test application and scale our cluster. To scale our appl
 
     ```bash
     kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
-    kubectl set resources deploy php-apache --requests=cpu=2000
+    kubectl set resources deploy php-apache --requests=cpu=1000
     kubectl expose deploy php-apache --port 80
     kubectl get pod -l app=php-apache
     ```
