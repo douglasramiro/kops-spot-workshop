@@ -416,16 +416,16 @@ Finally let's deploy a test application and scale our cluster. To scale our appl
     kubectl get pod -l app=php-apache
     ```
 
-2. Create an Hpa resource. This HPA scales up when CPU exceeds 50% of the allocated container resource.
+2. Create an Hpa resource. This HPA scales up when CPU exceeds 30% of the allocated container resource.
 
     ```bash
     kubectl autoscale deployment php-apache  \
-    --cpu-percent=20 \
+    --cpu-percent=30 \
     --min=1  \
-    --max=30 
+    --max=50 
     ```
 
-3. View the HPA using kubectl. You probably will see `<unknown>/50%` for 1-2 minutes and then you should be able to see `0%/50%`.
+3. View the HPA using kubectl. You probably will see `<unknown>/30%` for 1-2 minutes and then you should be able to see `0%/30%`.
 
     ```bash
     kubectl get hpa
