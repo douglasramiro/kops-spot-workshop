@@ -355,7 +355,7 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
     spec:
       additionalPolicies:
         node: |
-        [
+          [
             {
               "Effect":"Allow",
               "Action": [
@@ -369,7 +369,7 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
               ],
               "Resource":"*"
             }
-        ] 
+          ] 
     EOF
     yq merge --overwrite --inplace ./cluster_config.yaml ./extra_policies.yaml
     aws s3 cp ./cluster_config.yaml ${KOPS_STATE_STORE}/${NAME}/config
