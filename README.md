@@ -290,6 +290,8 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
     kops validate cluster --wait 10m
     ```
 
+The command will raise errors until the cluster is created.
+
 7. Once the cluster is in a healthy state, you can list nodes to check that the cluster and all its associated resources are up and running.
 
     ```bash
