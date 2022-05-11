@@ -409,4 +409,10 @@ There are a few parameters that you passed to its configuration. One of those pa
 Aside from the logs, there is a parameter that should be highlighted. We have set the parameter expander=random . The **Expanders** configuration is used to define how we want Cluster Autoscaler to scale-up when there are pending pods. The random expander will select randomly which Instance Group to scale. Random allocation across Instance Groups is useful for example in production clusters, where we want to diversify the allocation of instances across multiple pools. In test or development environments, you may want to change this setting to least-waste ; least-waste  selects the node group that will have the least idle CPU and memory after the scaling activity takes place, thus right-sizing the Instance Group and optimizing the utilization of the EC2 instances.
 
 ![Cluster Autoscaler Arch](/clusterautoscaler.png)
+
+4. You can also check the logs and steps taken by Cluster Autoscaler with the following command. This command will display Cluster Autoscaler logs.
+
+    ```bash
+    kubectl logs -f deployment/cluster-autoscaler --tail=10
+    ```
 </details>
