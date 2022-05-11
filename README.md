@@ -192,4 +192,24 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
     done
     ```
 
+4. You can validate the result of your changes by running the following command, and verifying that the labels have been added to the spec.nodeLabels section. The output of this command should be: 
+    - Instancegroup nodes-us-east-1a contains label kops.k8s.io/lifecycle: OnDemand
+    - Instancegroup nodes-us-east-1b contains label kops.k8s.io/lifecycle: OnDemand
+    - Instancegroup nodes-us-east-1c contains label kops.k8s.io/lifecycle: OnDemand
+
+    ```bash
+    for availability_zone in $(echo ${AWS_REGION_AZS} | sed 's/,/ /g')
+    do
+    NODEGROUP_NAME=nodes-${availability_zone}
+    kops get ig --name ${NAME} ${NODEGROUP_NAME} -o yaml | grep "lifecycle: OnDemand" > /dev/null
+    if [ $? -eq 0 ]
+    then
+        echo "Instancegroup ${NODEGROUP_NAME} contains label kops.k8s.io/lifecycle: OnDemand"
+    else
+        echo "Instancegroup ${NODEGROUP_NAME} DOES NOT contains label kops.k8s.io/lifecycle: OnDemand"
+    fi
+    done
+    ```
+
+
 </details>
