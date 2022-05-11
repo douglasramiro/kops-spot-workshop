@@ -188,7 +188,7 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
     EOF
     kops get instancegroups --name ${NAME} ${NODEGROUP_NAME} -o yaml > ./${NODEGROUP_NAME}.yaml
     yq merge -a append --overwrite --inplace ./${NODEGROUP_NAME}.yaml ./nodes-extra-labels.yaml
-    aws s3 cp ${NODEGROUP_NAME}.yaml ${KOPS_STATE_STORE}/${NAME}/instancegroup/${NODEGROUP_NAME}
+    # aws s3 cp ${NODEGROUP_NAME}.yaml ${KOPS_STATE_STORE}/${NAME}/instancegroup/${NODEGROUP_NAME}
     done
     ```
 
