@@ -247,7 +247,7 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
     kops toolbox instance-selector "spot-group-base-2vcpus-8gb" \
     --usage-class spot --cluster-autoscaler \
     --flexible --burst-support=false \
-    --vcpus-min=2 --vcpus-max=2 --memory-min 8gb --memory-max 8gb
+    --vcpus-min=2 --vcpus-max=2 --memory-min 8gb --memory-max 8gb \
     --deny-list '^?[1-3].*\..*' --gpus 0 \
     --node-count-max 5 --node-count-min 1 \
     --name ${NAME}
