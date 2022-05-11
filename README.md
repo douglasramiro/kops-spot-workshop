@@ -318,6 +318,7 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
     cat << EOF > ./node_termination_handler_addon.yaml
     spec:
       nodeTerminationHandler:
+        cpuRequest: 200m
         enabled: true
         enableSQSTerminationDraining: true
         managedASGTag: "aws-node-termination-handler/managed"
