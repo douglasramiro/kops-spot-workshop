@@ -347,72 +347,35 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
 
 [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) is a Kubernetes [controller](https://kubernetes.io/docs/concepts/architecture/controller/) that dynamically adjusts the size of the cluster. If there are pods that can't be scheduled in the cluster due to insufficient resources, Cluster Autoscaler will issue a scale-out action. When there are nodes in the cluster that have been under-utilized for a period of time, Cluster Autoscaler will scale-in the cluster. Internally Cluster Autoscaler evaluates a set of **instance groups** to scale up the cluster. When Cluster Autoscaler runs on AWS, **instance groups** are implemented using Auto Scaling Groups. To calculate the number of nodes to scale-out/in when required, Cluster Autoscaler assumes all the instances in an instance group are homogenous (i.e. have the same number of vCPUs and memory size).
 
-1. Cluster Autoscaler requires access to an additional set of IAM policies. Before we proceed with its installation, we will need to add the extra set of policies, which will allow the nodes in the cluster to call the right API calls to manage Auto Scaling Groups. Once the extra policies have been added, we will update the cluster for them to take effect.
+1. kOps facilitates the deployment of the Cluster Autoscaler, allowing you to add its configuration as an addon to the kOps cluster spec. Deploy the Cluster Autoscaler addon with the following command:
 
     ```bash
-    kops get cluster --name ${NAME} -o yaml > ./cluster_config.yaml
-    cat << EOF > ./extra_policies.yaml
+    kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
+    cat << EOF > ./cluster_autoscaler_addon.yaml
     spec:
-      additionalPolicies:
-        node: |
-          [
-            {
-              "Effect":"Allow",
-              "Action": [
-                "autoscaling:DescribeAutoScalingGroups",
-                "autoscaling:DescribeAutoScalingInstances",
-                "autoscaling:DescribeTags",
-                "autoscaling:DescribeLaunchConfigurations",
-                "autoscaling:SetDesiredCapacity",
-                "autoscaling:TerminateInstanceInAutoScalingGroup",
-                "ec2:DescribeLaunchTemplateVersions"
-              ],
-              "Resource":"*"
-            }
-          ] 
+      clusterAutoscaler:
+        awsUseStaticInstanceList: false
+        balanceSimilarNodeGroups: false
+        cpuRequest: 100m
+        enabled: true
+        expander: random
+        image: us.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler:v1.23.0
+        memoryRequest: 300Mi
+        newPodScaleUpDelay: 0s
+        scaleDownDelayAfterAdd: 10m0s
+        skipNodesWithLocalStorage: true
+        skipNodesWithSystemPods: true
     EOF
-    yq merge --overwrite --inplace ./cluster_config.yaml ./extra_policies.yaml
-    aws s3 cp ./cluster_config.yaml ${KOPS_STATE_STORE}/${NAME}/config
-    kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes
+    yq merge --overwrite --inplace ~/environment/cluster_config.yaml ~/environment/cluster_autoscaler_addon.yaml
+    aws s3 cp ~/environment/cluster_config.yaml ${KOPS_STATE_STORE}/${NAME}/config
+    kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
     ```
-
-2. We do recommend the use of [Helm](https://helm.sh/) to deploy the Cluster Autoscaler. Helm is a package manager for Kubernetes applications. It allows the creation of a set of Kubernetes resources to be deployed in a single logical deployment unit called a [Chart](https://artifacthub.io/). The following command will install Helm in your environment. If you are not running on Linux, you can follow [Helm documentation](https://helm.sh/docs/intro/install/) on an environment has been set up to authenticate and link with your cluster. The last line of this command should validate that Helm version 3 was installed successfully, showing the installed version.
-
-    ```bash
-    curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-    helm repo add stable https://charts.helm.sh/stable
-    helm version --short
-    ```
-
-3. You are now ready to install and set up [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler):
-
-    ```bash
-    helm repo add autoscaler https://kubernetes.github.io/autoscaler
-    helm upgrade --install cluster-autoscaler  autoscaler/cluster-autoscaler \
-    --set fullnameOverride=cluster-autoscaler \
-    --set nodeSelector."kops\.k8s\.io/lifecycle"=OnDemand \
-    --set cloudProvider=aws \
-    --set extraArgs.scale-down-enabled=true \
-    --set extraArgs.expander=random \
-    --set extraArgs.balance-similar-node-groups=true \
-    --set extraArgs.scale-down-unneeded-time=2m \
-    --set extraArgs.scale-down-delay-after-add=2m \
-    --set autoDiscovery.clusterName=${NAME} \
-    --set rbac.create=true \
-    --set awsRegion=${AWS_REGION} \
-    --wait
-    ```
-
-
-There are a few parameters that you passed to its configuration. One of those parameters is the `autoDiscovery.clusterName`. This matches with the tag that kOps toolbox instance-selector has set to the Instance Groups that you created earlier, and will result in Cluster Autoscaler being able to auto-discover and take ownership of those groups.
-
-Aside from the logs, there is a parameter that should be highlighted. We have set the parameter expander=random . The **Expanders** configuration is used to define how we want Cluster Autoscaler to scale-up when there are pending pods. The random expander will select randomly which Instance Group to scale. Random allocation across Instance Groups is useful for example in production clusters, where we want to diversify the allocation of instances across multiple pools. In test or development environments, you may want to change this setting to least-waste ; least-waste  selects the node group that will have the least idle CPU and memory after the scaling activity takes place, thus right-sizing the Instance Group and optimizing the utilization of the EC2 instances.
 
 ![Cluster Autoscaler Arch](/clusterautoscaler.png)
 
 4. You can also check the logs and steps taken by Cluster Autoscaler with the following command. This command will display Cluster Autoscaler logs.
 
     ```bash
-    kubectl logs -f deployment/cluster-autoscaler --tail=10
+    kubectl logs -f deployment/cluster-autoscaler -n kube-system --tail=10
     ```
 </details>
