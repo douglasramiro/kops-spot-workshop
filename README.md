@@ -310,22 +310,21 @@ When an interruption happens, EC2 sends a [Spot interruption notification](https
 
 1. Let us proceed to installing the [aws-node-termination-handler](https://github.com/aws/aws-node-termination-handler) in Queue Processor mode, with the help of kOps. The Handler will continuously poll an Amazon SQS queue, which receives events emitted by Amazon EventBridge that can lead to the termination of the nodes in your cluster (Spot Interruption/Rebalance events, maintenance events, Auto-Scaling Group lifycle hooks and [more](https://github.com/aws/aws-node-termination-handler#queue-processor)). This enables the Handler to [cordon](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#cordon) and [drain](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#drain) the node - also issuing a SIGTERM to the Pods and containers running on it, in order to achieve a graceful application termination. 
 
+kOps facilitates the deployment of the aws-node-termination-handler, allowing you to add its configuration as an addon to the kOps cluster spec. This addon also takes care of deploying all the necessary AWS infrastructure for you: SQS Queue, EventBridge rules, and the necessary Auto-Scaling group Lifecycle hooks. Deploy the aws-node-termination-handler addon with the following command:
 
-    kOps facilitates the deployment of the aws-node-termination-handler, allowing you to add its configuration as an addon to the kOps cluster spec. This addon also takes care of deploying all the necessary AWS infrastructure for you: SQS Queue, EventBridge rules, and the necessary Auto-Scaling group Lifecycle hooks. Deploy the aws-node-termination-handler addon with the following command:
-
-        ```bash
-        kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
-        cat << EOF > ./node_termination_handler_addon.yaml
-        spec:
-        nodeTerminationHandler:
-            enabled: true
-            enableSQSTerminationDraining: true
-            managedASGTag: "aws-node-termination-handler/managed"
-        EOF
-        yq merge --overwrite --inplace ~/environment/cluster_config.yaml ~/environment/node_termination_handler_addon.yaml
-        aws s3 cp ~/environment/cluster_config.yaml ${KOPS_STATE_STORE}/${NAME}/config
-        kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
-        ```
+    ```bash
+    kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
+    cat << EOF > ./node_termination_handler_addon.yaml
+    spec:
+      nodeTerminationHandler:
+        enabled: true
+        enableSQSTerminationDraining: true
+        managedASGTag: "aws-node-termination-handler/managed"
+    EOF
+    yq merge --overwrite --inplace ~/environment/cluster_config.yaml ~/environment/node_termination_handler_addon.yaml
+    aws s3 cp ~/environment/cluster_config.yaml ${KOPS_STATE_STORE}/${NAME}/config
+    kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
+    ```
 
 2. To check that the aws-node-termination-handler has been deployed successfully, execute the following command.
 
