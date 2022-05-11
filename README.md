@@ -312,7 +312,7 @@ When an interruption happens, EC2 sends a [Spot interruption notification](https
 
 <br/>
 
-kOps facilitates the deployment of the aws-node-termination-handler, allowing you to add its configuration as an addon to the kOps cluster spec. This addon also takes care of deploying all the necessary AWS infrastructure for you: SQS Queue, EventBridge rules, and the necessary Auto-Scaling group Lifecycle hooks. Deploy the aws-node-termination-handler addon with the following command:
+    kOps facilitates the deployment of the aws-node-termination-handler, allowing you to add its configuration as an addon to the kOps cluster spec. This addon also takes care of deploying all the necessary AWS infrastructure for you: SQS Queue, EventBridge rules, and the necessary Auto-Scaling group Lifecycle hooks. Deploy the aws-node-termination-handler addon with the following command:
 
     ```bash
     kops get cluster --name ${NAME} -o yaml > ~/environment/cluster_config.yaml 
