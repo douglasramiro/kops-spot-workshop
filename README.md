@@ -77,7 +77,7 @@ In this step you will install all the dependencies that you will need during the
     kubectl version
     ```
 
-5. In addition to kOps and kubectl, install [yq](https://github.com/mikefarah/yq/), a portable command-line YAML processor. You can follow yq [installation instructions](https://mikefarah.gitbook.io/yq/) for your system. On Cloud9 and Linux, we can install yq with the command on the right. The command requires that Go tools are installed in your environment. You can run  `go version` to check if Go is already installed in your environment; if it is not, [install go tools](https://golang.org/doc/install#install) before proceeding with this step.
+5. In addition to kOps and kubectl, install [yq](https://github.com/mikefarah/yq/), a portable command-line YAML processor. You can follow yq [installation instructions](https://mikefarah.gitbook.io/yq/) for your system. On Cloud9 and Linux, you can install yq with the command on the right. The command requires that Go tools are installed in your environment. You can run  `go version` to check if Go is already installed in your environment; if it is not, [install go tools](https://golang.org/doc/install#install) before proceeding with this step.
 
     ```bash
     GO111MODULE=on go get github.com/mikefarah/yq ; export PATH=$PATH:~/go/bin
@@ -90,12 +90,12 @@ In this step you will install all the dependencies that you will need during the
   <summary>Step 2: Set up kOps Cluster environment and state store</summary>
 <br/>
 
-In this step we will configure some of the environment variables that will be used to set up our environment, and create and configure the S3 bucket that kOps will use as [states store](https://kops.sigs.k8s.io/state/).
+In this step you will configure some of the environment variables that will be used to set up your environment, and create and configure the S3 bucket that kOps will use as [states store](https://kops.sigs.k8s.io/state/).
 
 
 1. Export environment variables according to the following requirements:
-    - The name of our cluster will be **“spot-kops-cluster”**. To reduce the dependencies on other services, in this tutorial we will create our cluster using [Gossip DNS](https://kops.sigs.k8s.io/gossip/), hence the cluster domain will be **k8s.local** and the fully qualified name of the cluster **spot-kops-cluster.k8s.local**.
-    - You will also create an S3 bucket where kOps configuration and the cluster's state will be stored. We will use [uuidgen](https://man7.org/linux/man-pages/man1/uuidgen.1.html) to generate a [unique S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html).
+    - The name of your cluster will be **“spot-kops-cluster”**. To reduce the dependencies on other services, in this tutorial you will create your cluster using [Gossip DNS](https://kops.sigs.k8s.io/gossip/), hence the cluster domain will be **k8s.local** and the fully qualified name of the cluster **spot-kops-cluster.k8s.local**.
+    - You will also create an S3 bucket where kOps configuration and the cluster's state will be stored. You will use [uuidgen](https://man7.org/linux/man-pages/man1/uuidgen.1.html) to generate a [unique S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html).
     - In the above command, you will set the environment variables that will be used across the rest of the session.
 
     ```bash
@@ -141,7 +141,7 @@ In this step we will configure some of the environment variables that will be us
 
 In this step you will create the cluster control plane and a kOps InstanceGroup with OnDemand instances. You will also add some labels to the group, so that you can place pods accordingly later on.
 
-1. It is now time to create the cluster. We will build a [Highly Available (HA)](https://kops.sigs.k8s.io/operations/high_availability/) cluster using m5.large instances for the [kubernetes masters](https://kubernetes.io/docs/concepts/) spread across three Availability Zones. Additionally we create an InstanceGroup with two t3.large OnDemand worker nodes, that we will use to demonstrate how you can configure your applications to run on Spot or OnDemand Instances, depending on the type of workflow.
+1. It is now time to create the cluster. You will build a [Highly Available (HA)](https://kops.sigs.k8s.io/operations/high_availability/) cluster using m5.large instances for the [kubernetes masters](https://kubernetes.io/docs/concepts/) spread across three Availability Zones. Additionally you will create an InstanceGroup with two t3.large OnDemand worker nodes, that you will use to demonstrate how you can configure your applications to run on Spot or OnDemand Instances, depending on the type of workflow.
 
     ```bash
     kops create cluster \
@@ -160,6 +160,10 @@ In this step you will create the cluster control plane and a kOps InstanceGroup 
 2. Great! The output of the previous command displays all the resources that will be created. You can check that the cluster configuration has been written to the kOps state S3 bucket. The following command should showcase the cluster state, and yield and an output similar to the following one:
 
     ```bash
-    
+    aws s3 ls --recursive ${KOPS_STATE_STORE}
+    ```
+
+    ```bash
+
     ```
 </details>
