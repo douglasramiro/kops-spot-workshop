@@ -120,7 +120,7 @@ In this step we will configure some of the environment variables that will be us
     ```bash
     aws s3api create-bucket \
     --bucket ${KOPS_STATE_PREFIX} \
-    --region ${AWS_REGION} \
+    --region ${AWS_REGION} 
     ```
 
 4. Once the bucket has been created, you can apply one of kOps best practices by enabling S3 Versioning on the bucket. S3 is acting as the state store, and by enabling versioning on the bucket you will be able to recover your cluster back to a previous state and configuration.
