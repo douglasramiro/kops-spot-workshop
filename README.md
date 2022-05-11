@@ -328,7 +328,13 @@ Let's proceed to installing the [aws-node-termination-handler](https://github.co
     kops update cluster --state=${KOPS_STATE_STORE} --name=${NAME} --yes --admin
     ```
 
-2. To check that the aws-node-termination-handler has been deployed successfully, execute the following command.
+2. Perform a rolling update on the cluster. This step may take five minutes to conclude:
+
+    ```bash
+     kops rolling-update cluster --yes
+    ```
+
+3. To check that the aws-node-termination-handler has been deployed successfully, execute the following command.
 
     ```bash
     kubectl get deployment aws-node-termination-handler -n kube-system -o wide
