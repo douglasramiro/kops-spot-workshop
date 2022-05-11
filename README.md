@@ -274,7 +274,14 @@ In order to tap into multiple Spot capacity pools, you will create two Instance 
 5. The command in the previous step will start requesting for all the cluster resources, and end up with an output similar to the following one. This may take around five minutes.
 
     ```bash
+    Cluster is starting.  It should be ready in a few minutes.
 
+    Suggestions:
+    * validate cluster: kops validate cluster --wait 10m
+    * list nodes: kubectl get nodes --show-labels
+    * ssh to the master: ssh -i ~/.ssh/id_rsa ubuntu@api.spot-kops-cluster.k8s.local
+    * the ubuntu user is specific to Ubuntu. If not using Ubuntu please use the appropriate user based on your OS.
+    * read about installing addons at: https://kops.sigs.k8s.io/addons.
     ```
 
 6. You can run the **kOps validate cluster** command to evaluate the state of the cluster a few times per minute, capturing the progress of its creation.
